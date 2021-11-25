@@ -1,5 +1,4 @@
 use diesel::*;
-use std::error::Error;
 use super::model::NewUser;
 use crate::database::schema;
 
@@ -8,7 +7,7 @@ pub fn create_user<'a>(
 	name: &'a String,
 	email: &'a String,
 	password: &'a String,
-) -> Result<usize, Box<dyn Error>> {
+) -> Result<usize, diesel::result::Error> {
 	let new_user = NewUser {
 		name,
 		email,
