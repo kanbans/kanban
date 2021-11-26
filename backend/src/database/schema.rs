@@ -6,6 +6,10 @@ table! {
         description -> Text,
         priority -> Integer,
         column -> Text,
+        created_at -> Timestamp,
+        created_by -> Text,
+        assigned_to -> Nullable<Text>,
+        tags_json -> Nullable<Text>,
     }
 }
 
