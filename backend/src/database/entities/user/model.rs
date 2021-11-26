@@ -3,7 +3,7 @@ use chrono::NaiveDateTime;
 
 #[derive(Queryable)]
 pub struct User {
-    pub id: i32,
+    pub id: String,
     pub name: String,
     pub email: String,
     pub password: String,
@@ -13,6 +13,7 @@ pub struct User {
 #[derive(Insertable)]
 #[table_name = "user"]
 pub struct NewUser<'a> {
+    pub id: String,
     pub name: &'a String,
     pub email: &'a String,
     pub password: &'a String,

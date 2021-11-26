@@ -14,3 +14,4 @@ actix-http = "2"
 actix-web = "3"
 chrono = "0.4"
 slog = "2.7.0"
+uuid = { version = "0.8", features = ["v4"] }
