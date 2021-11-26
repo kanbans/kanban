@@ -1,6 +1,24 @@
 table! {
+    card (id) {
+        id -> Text,
+        codename -> Text,
+        title -> Text,
+        description -> Text,
+        priority -> Integer,
+        column -> Text,
+    }
+}
+
+table! {
+    column (id) {
+        id -> Nullable<Text>,
+        name -> Text,
+    }
+}
+
+table! {
     tag (id) {
-        id -> Integer,
+        id -> Text,
         text -> Text,
         color -> Text,
     }
@@ -8,7 +26,7 @@ table! {
 
 table! {
     user (id) {
-        id -> Integer,
+        id -> Text,
         name -> Text,
         email -> Text,
         password -> Text,
@@ -16,4 +34,11 @@ table! {
     }
 }
 
-allow_tables_to_appear_in_same_query!(tag, user,);
+joinable!(card -> column (column));
+
+allow_tables_to_appear_in_same_query!(
+    card,
+    column,
+    tag,
+    user,
+);
