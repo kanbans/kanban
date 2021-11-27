@@ -1,7 +1,7 @@
 use super::model::NewTag;
 use crate::database::schema;
-use uuid::Uuid;
 use diesel::*;
+use uuid::Uuid;
 
 pub fn create_tag<'a>(
     conn: &SqliteConnection,

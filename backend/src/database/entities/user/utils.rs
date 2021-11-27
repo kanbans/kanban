@@ -1,7 +1,7 @@
 use super::model::NewUser;
 use crate::database::schema;
-use uuid::Uuid;
 use diesel::*;
+use uuid::Uuid;
 
 pub fn create_user<'a>(
     conn: &SqliteConnection,
