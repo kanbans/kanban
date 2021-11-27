@@ -14,8 +14,8 @@ table! {
 
 table! {
     card_tags (card_id) {
-        card_id -> Nullable<Text>,
-        tag_id -> Nullable<Text>,
+        card_id -> Text,
+        tag_id -> Text,
     }
 }
 
@@ -48,4 +48,10 @@ joinable!(card -> column (column));
 joinable!(card_tags -> card (card_id));
 joinable!(card_tags -> tag (tag_id));
 
-allow_tables_to_appear_in_same_query!(card, card_tags, column, tag, user,);
+allow_tables_to_appear_in_same_query!(
+    card,
+    card_tags,
+    column,
+    tag,
+    user,
+);
