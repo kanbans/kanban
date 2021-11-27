@@ -11,7 +11,7 @@ pub struct Card {
     pub column: String,
     pub created_at: NaiveDateTime,
     pub created_by: String,
-    pub assigned_to: String,
+    pub assigned_to: Option<String>,
 }
 
 #[derive(Insertable)]
@@ -24,5 +24,5 @@ pub struct NewCard<'a> {
     pub priority: &'a i32,
     pub column: &'a String,
     pub created_by: &'a String,
-    pub assigned_to: &'a String,
+    pub assigned_to: Option<String>,
 }

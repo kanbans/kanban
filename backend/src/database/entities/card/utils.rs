@@ -11,7 +11,7 @@ pub fn create_card<'a>(
     priority: &'a i32,
     column: &'a String,
     created_by: &'a String,
-    assigned_to: &'a String,
+    assigned_to: Option<String>,
 ) -> Result<usize, diesel::result::Error> {
     let id = Uuid::new_v4().to_string();
 
