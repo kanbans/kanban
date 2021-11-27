@@ -21,7 +21,7 @@ table! {
 
 table! {
     column (id) {
-        id -> Nullable<Text>,
+        id -> Text,
         name -> Text,
     }
 }
