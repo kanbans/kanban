@@ -9,10 +9,7 @@ pub fn create_board<'a>(
 ) -> Result<usize, diesel::result::Error> {
     let id = Uuid::new_v4().to_string();
 
-    let new_board = NewBoard {
-        id,
-        name,
-    };
+    let new_board = NewBoard { id, name };
 
     let result = diesel::insert_into(schema::board::table)
         .values(&new_board)

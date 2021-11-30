@@ -13,7 +13,7 @@ pub fn create_column<'a>(
     let new_column = NewColumn {
         id,
         name,
-        belongs_to
+        belongs_to,
     };
 
     let result = diesel::insert_into(schema::column::table)

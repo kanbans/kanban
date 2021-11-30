@@ -57,11 +57,4 @@ joinable!(card_tags -> card (card_id));
 joinable!(card_tags -> tag (tag_id));
 joinable!(column -> board (belongs_to));
 
-allow_tables_to_appear_in_same_query!(
-    board,
-    card,
-    card_tags,
-    column,
-    tag,
-    user,
-);
+allow_tables_to_appear_in_same_query!(board, card, card_tags, column, tag, user,);
