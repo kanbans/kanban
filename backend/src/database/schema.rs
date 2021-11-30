@@ -1,4 +1,11 @@
 table! {
+    board (id) {
+        id -> Text,
+        name -> Text,
+    }
+}
+
+table! {
     card (id) {
         id -> Text,
         codename -> Text,
@@ -23,6 +30,7 @@ table! {
     column (id) {
         id -> Text,
         name -> Text,
+        belongs_to -> Text,
     }
 }
 
@@ -47,8 +55,10 @@ table! {
 joinable!(card -> column (column));
 joinable!(card_tags -> card (card_id));
 joinable!(card_tags -> tag (tag_id));
+joinable!(column -> board (belongs_to));
 
 allow_tables_to_appear_in_same_query!(
+    board,
     card,
     card_tags,
     column,

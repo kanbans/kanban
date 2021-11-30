@@ -4,6 +4,7 @@ use crate::database::schema::column;
 pub struct Column {
     pub id: String,
     pub name: String,
+    pub belongs_to: String
 }
 
 #[derive(Insertable)]
@@ -11,4 +12,5 @@ pub struct Column {
 pub struct NewColumn<'a> {
     pub id: String,
     pub name: &'a String,
+    pub belongs_to: &'a String,
 }
