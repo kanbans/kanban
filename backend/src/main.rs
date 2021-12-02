@@ -29,10 +29,12 @@ async fn main() -> std::io::Result<()> {
     info!(log, "Starting kanban server on {}:{}", host, port);
 
     HttpServer::new(move || {
-        App::new().data(State {
-            pool: get_db_pool(),
-            log: log.clone(),
-        }).service(routes::root::root)
+        App::new()
+            .data(State {
+                pool: get_db_pool(),
+                log: log.clone(),
+            })
+            .service(routes::root::root)
     })
     .bind((host, port))?
     .run()

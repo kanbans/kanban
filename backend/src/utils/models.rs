@@ -1,8 +1,8 @@
 use crate::database::utils::Pool;
 use actix_web::{error::ResponseError, http::StatusCode, HttpResponse};
-use thiserror::Error;
-use serde::{Serialize};
+use serde::Serialize;
 use slog;
+use thiserror::Error;
 
 #[derive(Clone)]
 pub struct State {
@@ -13,7 +13,7 @@ pub struct State {
 #[derive(Error, Debug)]
 pub enum AppError {
     #[error("Something went wrong -- please try again later!")]
-    Unknown
+    Unknown,
 }
 
 #[derive(Serialize)]
