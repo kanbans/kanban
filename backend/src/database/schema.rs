@@ -35,6 +35,13 @@ table! {
 }
 
 table! {
+    sessions (session_token) {
+        session_token -> Text,
+        belongs_to -> Text,
+    }
+}
+
+table! {
     tag (id) {
         id -> Text,
         text -> Text,
@@ -56,5 +63,14 @@ joinable!(card -> column (column));
 joinable!(card_tags -> card (card_id));
 joinable!(card_tags -> tag (tag_id));
 joinable!(column -> board (belongs_to));
+joinable!(sessions -> user (belongs_to));
 
-allow_tables_to_appear_in_same_query!(board, card, card_tags, column, tag, user,);
+allow_tables_to_appear_in_same_query!(
+    board,
+    card,
+    card_tags,
+    column,
+    sessions,
+    tag,
+    user,
+);
