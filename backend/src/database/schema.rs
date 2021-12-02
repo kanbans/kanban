@@ -65,4 +65,12 @@ joinable!(cards -> columns (column));
 joinable!(columns -> boards (belongs_to));
 joinable!(sessions -> users (belongs_to));
 
-allow_tables_to_appear_in_same_query!(boards, card_tags, cards, columns, sessions, tags, users,);
+allow_tables_to_appear_in_same_query!(
+    boards,
+    card_tags,
+    cards,
+    columns,
+    sessions,
+    tags,
+    users,
+);

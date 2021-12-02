@@ -35,6 +35,7 @@ async fn main() -> std::io::Result<()> {
                 log: log.clone(),
             })
             .service(routes::root::root)
+            .service(routes::user::register)
     })
     .bind((host, port))?
     .run()

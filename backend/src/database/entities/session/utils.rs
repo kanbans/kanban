@@ -2,11 +2,13 @@ use super::model::NewSession;
 use crate::database::schema;
 use diesel::*;
 
+type DbError = Box<dyn std::error::Error + Send + Sync>;
+
 pub fn create_session<'a>(
     conn: &SqliteConnection,
     session_token: &'a String,
     belongs_to: &'a String,
-) -> Result<usize, diesel::result::Error> {
+) -> Result<usize, DbError> {
     let new_session = NewSession {
         session_token,
         belongs_to,
