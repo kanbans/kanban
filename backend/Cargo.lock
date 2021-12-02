@@ -339,10 +339,12 @@ dependencies = [
  "chrono",
  "diesel",
  "dotenv",
+ "serde",
  "serde_json",
  "slog",
  "slog-async",
  "slog-term",
+ "thiserror",
  "uuid",
 ]
 
