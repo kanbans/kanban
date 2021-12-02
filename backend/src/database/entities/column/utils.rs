@@ -16,7 +16,7 @@ pub fn create_column<'a>(
         belongs_to,
     };
 
-    let result = diesel::insert_into(schema::column::table)
+    let result = diesel::insert_into(schema::columns::table)
         .values(&new_column)
         .execute(conn)?;
 

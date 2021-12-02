@@ -1,12 +1,19 @@
 table! {
-    board (id) {
+    boards (id) {
         id -> Text,
         name -> Text,
     }
 }
 
 table! {
-    card (id) {
+    card_tags (card_id) {
+        card_id -> Text,
+        tag_id -> Text,
+    }
+}
+
+table! {
+    cards (id) {
         id -> Text,
         codename -> Text,
         title -> Text,
@@ -20,14 +27,7 @@ table! {
 }
 
 table! {
-    card_tags (card_id) {
-        card_id -> Text,
-        tag_id -> Text,
-    }
-}
-
-table! {
-    column (id) {
+    columns (id) {
         id -> Text,
         name -> Text,
         belongs_to -> Text,
@@ -42,7 +42,7 @@ table! {
 }
 
 table! {
-    tag (id) {
+    tags (id) {
         id -> Text,
         text -> Text,
         color -> Text,
@@ -50,7 +50,7 @@ table! {
 }
 
 table! {
-    user (id) {
+    users (id) {
         id -> Text,
         name -> Text,
         email -> Text,
@@ -59,18 +59,10 @@ table! {
     }
 }
 
-joinable!(card -> column (column));
-joinable!(card_tags -> card (card_id));
-joinable!(card_tags -> tag (tag_id));
-joinable!(column -> board (belongs_to));
-joinable!(sessions -> user (belongs_to));
+joinable!(card_tags -> cards (card_id));
+joinable!(card_tags -> tags (tag_id));
+joinable!(cards -> columns (column));
+joinable!(columns -> boards (belongs_to));
+joinable!(sessions -> users (belongs_to));
 
-allow_tables_to_appear_in_same_query!(
-    board,
-    card,
-    card_tags,
-    column,
-    sessions,
-    tag,
-    user,
-);
+allow_tables_to_appear_in_same_query!(boards, card_tags, cards, columns, sessions, tags, users,);

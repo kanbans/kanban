@@ -11,7 +11,7 @@ pub fn create_board<'a>(
 
     let new_board = NewBoard { id, name };
 
-    let result = diesel::insert_into(schema::board::table)
+    let result = diesel::insert_into(schema::boards::table)
         .values(&new_board)
         .execute(conn)?;
 

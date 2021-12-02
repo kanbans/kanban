@@ -18,7 +18,7 @@ pub fn create_user<'a>(
         password,
     };
 
-    let result = diesel::insert_into(schema::user::table)
+    let result = diesel::insert_into(schema::users::table)
         .values(&new_user)
         .execute(conn)?;
 

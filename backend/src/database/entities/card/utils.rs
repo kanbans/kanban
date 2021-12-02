@@ -26,7 +26,7 @@ pub fn create_card<'a>(
         assigned_to,
     };
 
-    let result = diesel::insert_into(schema::card::table)
+    let result = diesel::insert_into(schema::cards::table)
         .values(&new_card)
         .execute(conn)?;
 

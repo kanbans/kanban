@@ -11,7 +11,7 @@ pub fn create_tag<'a>(
     let id = Uuid::new_v4().to_string();
     let new_tag = NewTag { id, text, color };
 
-    let result = diesel::insert_into(schema::tag::table)
+    let result = diesel::insert_into(schema::tags::table)
         .values(&new_tag)
         .execute(conn)?;
 

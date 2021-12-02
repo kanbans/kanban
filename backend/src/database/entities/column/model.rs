@@ -1,4 +1,4 @@
-use crate::database::schema::column;
+use crate::database::schema::columns;
 
 #[derive(Queryable)]
 pub struct Column {
@@ -8,7 +8,7 @@ pub struct Column {
 }
 
 #[derive(Insertable)]
-#[table_name = "column"]
+#[table_name = "columns"]
 pub struct NewColumn<'a> {
     pub id: String,
     pub name: &'a String,

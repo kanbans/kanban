@@ -1,4 +1,4 @@
-use crate::database::schema::tag;
+use crate::database::schema::tags;
 
 #[derive(Queryable)]
 pub struct Tag {
@@ -8,7 +8,7 @@ pub struct Tag {
 }
 
 #[derive(Insertable)]
-#[table_name = "tag"]
+#[table_name = "tags"]
 pub struct NewTag<'a> {
     pub id: String,
     pub text: &'a String,

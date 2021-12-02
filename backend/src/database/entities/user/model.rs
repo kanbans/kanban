@@ -1,4 +1,4 @@
-use crate::database::schema::user;
+use crate::database::schema::users;
 use chrono::NaiveDateTime;
 
 #[derive(Queryable)]
@@ -11,7 +11,7 @@ pub struct User {
 }
 
 #[derive(Insertable)]
-#[table_name = "user"]
+#[table_name = "users"]
 pub struct NewUser<'a> {
     pub id: String,
     pub name: &'a String,
