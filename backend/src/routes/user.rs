@@ -63,7 +63,8 @@ async fn login(state: web::Data<State>, body: web::Json<LoginP>) -> Result<HttpR
     web::block(move || {
         let conn = state.pool.get()?;
 
-        let user = entities::user::utils::find_user(&conn, &body.email)?;
+        let user = entities::user::utils::find_user(&conn, &body.email)
+            .map_err(|_| AppError::IncorrectCreds)?;
         let parsed_hash = PasswordHash::new(&user.password).map_err(|e| {
             error!(state.log, "error while creating parsed_hash: {}", e);
             AppError::Unknown
@@ -71,10 +72,7 @@ async fn login(state: web::Data<State>, body: web::Json<LoginP>) -> Result<HttpR
 
         Pbkdf2
             .verify_password(body.password.as_bytes(), &parsed_hash)
-            .map_err(|_| {
-                // TODO replace this with unauthorised
-                AppError::Unknown
-            })?;
+            .map_err(|_| AppError::IncorrectCreds)?;
 
         entities::session::utils::create_session(&conn, &token, &user.id)
     })
