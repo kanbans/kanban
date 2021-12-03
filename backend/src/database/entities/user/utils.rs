@@ -1,4 +1,4 @@
-use super::model::NewUser;
+use super::model::{NewUser, User};
 use crate::database::schema;
 use diesel::*;
 use uuid::Uuid;
@@ -25,4 +25,12 @@ pub fn create_user<'a>(
         .execute(conn)?;
 
     Ok(new_user)
+}
+
+pub fn find_user<'a>(conn: &SqliteConnection, user_email: &'a String) -> Result<User, DbError> {
+    use crate::database::schema::users::dsl::*;
+
+    let user = users.filter(email.eq(user_email)).first::<User>(conn)?;
+
+    Ok(user)
 }
