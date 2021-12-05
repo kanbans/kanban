@@ -18,7 +18,7 @@ struct RegisterP {
     password: String,
 }
 
-#[post("/register")]
+#[post("/user/register")]
 async fn register(
     state: web::Data<State>,
     body: web::Json<RegisterP>,
@@ -55,7 +55,7 @@ struct LoginP {
     password: String,
 }
 
-#[post("/login")]
+#[post("/user/login")]
 async fn login(state: web::Data<State>, body: web::Json<LoginP>) -> Result<HttpResponse, AppError> {
     let session_token = KeyBuilder::new().size(64).as_base64();
     let token = session_token.clone();
