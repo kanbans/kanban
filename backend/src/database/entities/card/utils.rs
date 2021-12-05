@@ -1,5 +1,6 @@
 use super::model::NewCard;
 use crate::database::schema;
+use crate::database::utils::DbError;
 use diesel::*;
 use uuid::Uuid;
 
@@ -12,7 +13,7 @@ pub fn create_card<'a>(
     column: &'a String,
     created_by: &'a String,
     assigned_to: Option<String>,
-) -> Result<usize, diesel::result::Error> {
+) -> Result<usize, DbError> {
     let id = Uuid::new_v4().to_string();
 
     let new_card = NewCard {

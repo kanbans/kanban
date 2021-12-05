@@ -1,9 +1,8 @@
 use super::model::{NewUser, User};
 use crate::database::schema;
+use crate::database::utils::DbError;
 use diesel::*;
 use uuid::Uuid;
-
-type DbError = Box<dyn std::error::Error + Send + Sync>;
 
 pub fn create_user<'a>(
     conn: &SqliteConnection,

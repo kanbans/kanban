@@ -1,5 +1,6 @@
 use super::model::NewColumn;
 use crate::database::schema;
+use crate::database::utils::DbError;
 use diesel::*;
 use uuid::Uuid;
 
@@ -7,7 +8,7 @@ pub fn create_column<'a>(
     conn: &SqliteConnection,
     name: &'a String,
     belongs_to: &'a String,
-) -> Result<usize, diesel::result::Error> {
+) -> Result<usize, DbError> {
     let id = Uuid::new_v4().to_string();
 
     let new_column = NewColumn {
