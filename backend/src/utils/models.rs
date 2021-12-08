@@ -18,6 +18,8 @@ pub enum AppError {
     IncorrectCreds,
     #[error("Your session is invalid, please log in again")]
     InvalidSession,
+    #[error("You must log in to perform this action")]
+    NotLoggedIn,
 }
 
 #[derive(Serialize)]
@@ -32,6 +34,7 @@ impl ResponseError for AppError {
             Self::Unknown => StatusCode::INTERNAL_SERVER_ERROR,
             Self::IncorrectCreds => StatusCode::UNAUTHORIZED,
             Self::InvalidSession => StatusCode::UNAUTHORIZED,
+            Self::NotLoggedIn => StatusCode::FORBIDDEN,
         }
     }
 

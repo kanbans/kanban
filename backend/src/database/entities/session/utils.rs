@@ -24,7 +24,7 @@ pub fn create_session<'a>(
 
 pub fn find_user_with_session<'a>(
     conn: &SqliteConnection,
-    token: &'a String,
+    token: &'a str,
 ) -> Result<User, DbError> {
     use crate::database::schema::sessions::dsl::*;
     use crate::database::schema::users::dsl::*;
