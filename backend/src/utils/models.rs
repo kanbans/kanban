@@ -12,10 +12,12 @@ pub struct State {
 
 #[derive(Error, Debug)]
 pub enum AppError {
-    #[error("Something went wrong -- please try again later!")]
+    #[error("Something went wrong -- please try again later")]
     Unknown,
-    #[error("Entered username or password is invalid!")]
+    #[error("Entered username or password is invalid")]
     IncorrectCreds,
+    #[error("Your session is invalid, please log in again")]
+    InvalidSession,
 }
 
 #[derive(Serialize)]
@@ -29,6 +31,7 @@ impl ResponseError for AppError {
         match *self {
             Self::Unknown => StatusCode::INTERNAL_SERVER_ERROR,
             Self::IncorrectCreds => StatusCode::UNAUTHORIZED,
+            Self::InvalidSession => StatusCode::UNAUTHORIZED,
         }
     }
 

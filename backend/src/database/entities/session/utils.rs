@@ -1,4 +1,5 @@
-use super::model::NewSession;
+use super::model::{NewSession, Session};
+use crate::database::entities::user::model::User;
 use crate::database::schema;
 use diesel::*;
 
@@ -19,4 +20,25 @@ pub fn create_session<'a>(
         .execute(conn)?;
 
     Ok(result)
+}
+
+pub fn find_user_with_session<'a>(
+    conn: &SqliteConnection,
+    token: &'a String,
+) -> Result<User, DbError> {
+    use crate::database::schema::sessions::dsl::*;
+    use crate::database::schema::users::dsl::*;
+
+    //let session = sessions.filter(email.eq(user_email)).first::<User>(conn)?;
+    let session = sessions
+        .filter(session_token.eq(token))
+        .first::<Session>(conn)?;
+
+    // TODO: log error when this doesn't succeed
+    // possibly need to clean up invalid data
+    let user = users
+        .filter(id.eq(session.belongs_to))
+        .first::<User>(conn)?;
+
+    Ok(user)
 }
