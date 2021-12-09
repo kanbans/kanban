@@ -36,6 +36,7 @@ async fn main() -> std::io::Result<()> {
             })
             .service(routes::root::root)
             .service(routes::user::register)
+            .service(routes::user::login)
             .service(routes::user::me)
     })
     .bind((host, port))?
