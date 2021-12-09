@@ -10,7 +10,7 @@ pub struct State {
     pub log: slog::Logger,
 }
 
-#[derive(Error, Debug)]
+#[derive(Error, Debug, Clone)]
 pub enum AppError {
     #[error("Something went wrong -- please try again later")]
     Unknown,

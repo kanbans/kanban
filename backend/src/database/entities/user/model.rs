@@ -18,10 +18,6 @@ pub struct User {
     pub created_at: NaiveDateTime,
 }
 
-fn get_auth_header<'a>(req: &'a HttpRequest) -> Option<&'a str> {
-    req.headers().get("Authorisation")?.to_str().ok()
-}
-
 impl FromRequest for User {
     type Error = AppError;
     type Future = Pin<Box<dyn Future<Output = Result<Self, AppError>>>>;
@@ -29,21 +25,25 @@ impl FromRequest for User {
 
     fn from_request(req: &HttpRequest, _: &mut Payload) -> Self::Future {
         let r = req.clone();
-        let authorization = r.headers().get("Authorization").clone();
+        let authorization = r.headers().get("Authorization").cloned();
+
+        let conn = req
+            .extensions()
+            .get::<State>()
+            .expect("connection not passed as data!")
+            .pool
+            .get()
+            .map_err(|_| AppError::Unknown);
+
+        let auth_head = authorization.ok_or(AppError::NotLoggedIn);
 
         Box::pin(async move {
-            let sess_token = authorization
-                .ok_or(AppError::NotLoggedIn)?
+            let sess_token = auth_head?
                 .to_str()
-                .map_err(|_| AppError::Unknown)?;
+                .map_err(|_| AppError::Unknown)?
+                .to_string();
 
-            let conn = req
-                .extensions()
-                .get::<State>()
-                .expect("connection not passed as data!")
-                .pool
-                .get()
-                .map_err(|_| AppError::Unknown)?;
+            let conn = conn?;
 
             let user: Result<User, BlockingError<AppError>> = web::block(move || {
                 find_user_with_session(&conn, &sess_token).map_err(|_| AppError::InvalidSession)
