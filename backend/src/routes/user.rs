@@ -26,10 +26,10 @@ async fn register(
 ) -> Result<HttpResponse, AppError> {
     let session_token = KeyBuilder::new().size(64).as_base64();
     let token = session_token.clone();
+    let conn = state.pool.get();
 
     web::block(move || {
-        let conn = state.pool.get()?;
-
+        let conn = conn?;
         let salt = SaltString::generate(&mut OsRng);
         let password_hash = Pbkdf2
             .hash_password(body.password.as_bytes(), &salt)
@@ -42,7 +42,10 @@ async fn register(
         entities::session::utils::create_session(&conn, &token, &user.id)
     })
     .await
-    .map_err(|_| AppError::Unknown)?;
+    .map_err(|e| {
+        error!(state.log, "U01 -- {}", e);
+        AppError::Unknown
+    })?;
 
     Ok(web::HttpResponse::Ok().json(json!({
         "success": true,
