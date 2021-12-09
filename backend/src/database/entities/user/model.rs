@@ -1,9 +1,13 @@
+use crate::database::entities::session::utils::find_user_with_session;
 use crate::database::schema::users;
 use crate::utils::models::AppError;
+use crate::utils::models::State;
+use actix_http::error::BlockingError;
 use actix_http::Payload;
-use actix_web::{FromRequest, HttpRequest};
+use actix_web::{web, FromRequest, HttpRequest};
 use chrono::NaiveDateTime;
-use futures::future::{err, ok};
+use futures::Future;
+use std::pin::Pin;
 
 #[derive(Queryable, Clone)]
 pub struct User {
@@ -14,16 +18,44 @@ pub struct User {
     pub created_at: NaiveDateTime,
 }
 
+fn get_auth_header<'a>(req: &'a HttpRequest) -> Option<&'a str> {
+    req.headers().get("Authorisation")?.to_str().ok()
+}
+
 impl FromRequest for User {
     type Error = AppError;
-    type Future = futures::future::Ready<Result<Self, Self::Error>>;
+    type Future = Pin<Box<dyn Future<Output = Result<Self, Self::Error>>>>;
     type Config = ();
 
     fn from_request(req: &HttpRequest, _: &mut Payload) -> Self::Future {
-        match req.extensions().get::<User>() {
-            Some(user) => return ok(user.clone()),
-            None => return err(AppError::Unknown),
-        };
+        let authorization = req.headers().get("Authorization");
+
+        Box::pin(async {
+            let sess_token = authorization
+                .ok_or(AppError::NotLoggedIn)?
+                .to_str()
+                .map_err(|_| AppError::Unknown)?;
+
+            let kekeke = sess_token.clone();
+
+            let conn = req
+                .extensions()
+                .get::<State>()
+                .expect("connection not passed as data!")
+                .pool
+                .get()
+                .map_err(|_| AppError::Unknown)?;
+
+            let user: Result<User, BlockingError<AppError>> = web::block(move || {
+                find_user_with_session(&conn, &sess_token).map_err(|_| AppError::InvalidSession)
+            })
+            .await;
+
+            match user {
+                Ok(u) => Ok(u),
+                Err(_) => Err(AppError::Unknown),
+            }
+        })
     }
 }
 
