@@ -28,15 +28,14 @@ impl FromRequest for User {
     type Config = ();
 
     fn from_request(req: &HttpRequest, _: &mut Payload) -> Self::Future {
-        let authorization = req.headers().get("Authorization");
+        let r = req.clone();
+        let authorization = r.headers().get("Authorization").clone();
 
-        Box::pin(async {
+        Box::pin(async move {
             let sess_token = authorization
                 .ok_or(AppError::NotLoggedIn)?
                 .to_str()
                 .map_err(|_| AppError::Unknown)?;
-
-            let kekeke = sess_token.clone();
 
             let conn = req
                 .extensions()
