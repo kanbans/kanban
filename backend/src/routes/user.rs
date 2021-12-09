@@ -90,7 +90,7 @@ async fn login(state: web::Data<State>, body: web::Json<LoginP>) -> Result<HttpR
 }
 
 #[post("/user/me")]
-async fn me(user: web::Data<User>) -> Result<HttpResponse, AppError> {
+async fn me(user: User) -> Result<HttpResponse, AppError> {
     Ok(web::HttpResponse::Ok()
         .json(json!({ "id": user.id, "name": user.name, "email": user.email })))
 }

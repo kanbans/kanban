@@ -28,12 +28,9 @@ impl FromRequest for User {
         let authorization = r.headers().get("Authorization").cloned();
 
         let conn = req
-            .extensions()
-            .get::<State>()
-            .expect("connection not passed as data!")
-            .pool
-            .get()
-            .map_err(|_| AppError::Unknown);
+            .app_data::<web::Data<State>>()
+            .and_then(|i| i.pool.get().ok())
+            .ok_or(AppError::Unknown);
 
         let auth_head = authorization.ok_or(AppError::NotLoggedIn);
 
