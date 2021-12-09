@@ -24,7 +24,7 @@ fn get_auth_header<'a>(req: &'a HttpRequest) -> Option<&'a str> {
 
 impl FromRequest for User {
     type Error = AppError;
-    type Future = Pin<Box<dyn Future<Output = Result<Self, Self::Error>>>>;
+    type Future = Pin<Box<dyn Future<Output = Result<Self, AppError>>>>;
     type Config = ();
 
     fn from_request(req: &HttpRequest, _: &mut Payload) -> Self::Future {
@@ -52,7 +52,8 @@ impl FromRequest for User {
 
             match user {
                 Ok(u) => Ok(u),
-                Err(_) => Err(AppError::Unknown),
+                Err(BlockingError::Canceled) => Err(AppError::Unknown),
+                Err(BlockingError::Error(e)) => Err(e),
             }
         })
     }
