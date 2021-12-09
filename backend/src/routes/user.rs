@@ -1,4 +1,5 @@
 use crate::database::entities;
+use crate::database::entities::user::model::User;
 use crate::utils::models::AppError;
 use crate::utils::models::State;
 use actix_web::{post, web, HttpResponse};
@@ -83,4 +84,10 @@ async fn login(state: web::Data<State>, body: web::Json<LoginP>) -> Result<HttpR
         "success": true,
         "session_token": session_token,
     })))
+}
+
+#[post("/user/me")]
+async fn me(user: web::Data<User>) -> Result<HttpResponse, AppError> {
+    Ok(web::HttpResponse::Ok()
+        .json(json!({ "id": user.id, "name": user.name, "email": user.email })))
 }
