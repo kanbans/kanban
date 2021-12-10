@@ -5,6 +5,7 @@ use std::env;
 
 pub type Pool = r2d2::Pool<ConnectionManager<SqliteConnection>>;
 pub type DbError = Box<dyn std::error::Error + Send + Sync>;
+pub type DynError = Box<dyn std::error::Error>;
 
 pub fn get_db_pool() -> Pool {
     let database_url = env::var("DATABASE_URL").expect("DATABASE_URL must be set");

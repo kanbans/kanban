@@ -1,7 +1,9 @@
 use crate::database::entities;
 use crate::database::entities::user::model::User;
+use crate::utils::misc::from_blocking_err;
 use crate::utils::models::AppError;
 use crate::utils::models::State;
+use actix_web::HttpRequest;
 use actix_web::{post, web, HttpResponse};
 use libreauth::key::KeyBuilder;
 use pbkdf2::{
@@ -23,13 +25,15 @@ struct RegisterP {
 async fn register(
     state: web::Data<State>,
     body: web::Json<RegisterP>,
+    req: HttpRequest,
 ) -> Result<HttpResponse, AppError> {
     let session_token = KeyBuilder::new().size(64).as_base64();
     let token = session_token.clone();
-    let conn = state.pool.get();
+
+    let s2 = state.clone();
 
     web::block(move || {
-        let conn = conn?;
+        let conn = state.pool.get()?;
         let salt = SaltString::generate(&mut OsRng);
         let password_hash = Pbkdf2
             .hash_password(body.password.as_bytes(), &salt)
@@ -42,10 +46,7 @@ async fn register(
         entities::session::utils::create_session(&conn, &token, &user.id)
     })
     .await
-    .map_err(|e| {
-        error!(state.log, "U01 -- {}", e);
-        AppError::Unknown
-    })?;
+    .map_err(|e| from_blocking_err(e, &s2, req))?;
 
     Ok(web::HttpResponse::Ok().json(json!({
         "success": true,
@@ -60,17 +61,23 @@ struct LoginP {
 }
 
 #[post("/user/login")]
-async fn login(state: web::Data<State>, body: web::Json<LoginP>) -> Result<HttpResponse, AppError> {
+async fn login(
+    state: web::Data<State>,
+    body: web::Json<LoginP>,
+    req: HttpRequest,
+) -> Result<HttpResponse, AppError> {
     let session_token = KeyBuilder::new().size(64).as_base64();
     let token = session_token.clone();
 
+    let s2 = state.clone();
+
     web::block(move || {
         let conn = state.pool.get()?;
-
         let user = entities::user::utils::find_user(&conn, &body.email)
             .map_err(|_| AppError::IncorrectCreds)?;
+
         let parsed_hash = PasswordHash::new(&user.password).map_err(|e| {
-            error!(state.log, "error while creating parsed_hash: {}", e);
+            error!(state.log, "parsed_hash err: {}", e);
             AppError::Unknown
         })?;
 
@@ -81,7 +88,7 @@ async fn login(state: web::Data<State>, body: web::Json<LoginP>) -> Result<HttpR
         entities::session::utils::create_session(&conn, &token, &user.id)
     })
     .await
-    .map_err(|_| AppError::Unknown)?;
+    .map_err(|e| from_blocking_err(e, &s2, req))?;
 
     Ok(web::HttpResponse::Ok().json(json!({
         "success": true,
