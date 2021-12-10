@@ -30,7 +30,7 @@ async fn register(
     let session_token = KeyBuilder::new().size(64).as_base64();
     let token = session_token.clone();
 
-    let s2 = state.clone();
+    let log = &state.log.clone();
 
     web::block(move || {
         let conn = state.pool.get()?;
@@ -46,7 +46,7 @@ async fn register(
         entities::session::utils::create_session(&conn, &token, &user.id)
     })
     .await
-    .map_err(|e| from_blocking_err(e, &s2, req))?;
+    .map_err(|e| from_blocking_err(e, log, req))?;
 
     Ok(web::HttpResponse::Ok().json(json!({
         "success": true,
@@ -69,7 +69,7 @@ async fn login(
     let session_token = KeyBuilder::new().size(64).as_base64();
     let token = session_token.clone();
 
-    let s2 = state.clone();
+    let log = &state.log.clone();
 
     web::block(move || {
         let conn = state.pool.get()?;
@@ -88,7 +88,7 @@ async fn login(
         entities::session::utils::create_session(&conn, &token, &user.id)
     })
     .await
-    .map_err(|e| from_blocking_err(e, &s2, req))?;
+    .map_err(|e| from_blocking_err(e, log, req))?;
 
     Ok(web::HttpResponse::Ok().json(json!({
         "success": true,
