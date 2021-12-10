@@ -1,0 +1,1 @@
+export type Associate<E, T> = { variant: E, data: T };
