@@ -5,10 +5,18 @@ use crate::database::utils::DbError;
 use diesel::*;
 use uuid::Uuid;
 
-pub fn create_board<'a>(conn: &SqliteConnection, name: &'a String) -> Result<usize, DbError> {
+pub fn create_board<'a>(
+    conn: &SqliteConnection,
+    name: &'a String,
+    belongs_to: &'a String,
+) -> Result<usize, DbError> {
     let id = Uuid::new_v4().to_string();
 
-    let new_board = NewBoard { id, name };
+    let new_board = NewBoard {
+        id,
+        name,
+        belongs_to,
+    };
 
     let result = diesel::insert_into(schema::boards::table)
         .values(&new_board)
@@ -44,9 +52,9 @@ pub fn update_name(
     Ok(res)
 }
 
-pub fn get_boards(conn: &SqliteConnection) -> Result<Vec<Board>, DbError> {
+pub fn get_boards(conn: &SqliteConnection, user_id: String) -> Result<Vec<Board>, DbError> {
     use crate::database::schema::boards::dsl::*;
-    let res = boards.load::<Board>(conn)?;
+    let res = boards.filter(belongs_to.eq(user_id)).load::<Board>(conn)?;
 
     Ok(res)
 }

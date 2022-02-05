@@ -1,3 +1,4 @@
+use crate::database::entities::user::model::User;
 use crate::utils::misc::from_blocking_err;
 use crate::utils::models::AppError;
 use crate::{database::entities::board, utils::models::State};
@@ -7,12 +8,12 @@ use serde_json::json;
 type Resp = Result<HttpResponse, AppError>;
 
 #[post("/board")]
-async fn create(state: web::Data<State>, req: HttpRequest, name: String) -> Resp {
+async fn create(state: web::Data<State>, req: HttpRequest, name: String, user: User) -> Resp {
     let log = &state.log.clone();
 
     web::block(move || {
         let conn = state.pool.get()?;
-        board::utils::create_board(&conn, &name)
+        board::utils::create_board(&conn, &name, &user.id)
     })
     .await
     .map_err(|e| from_blocking_err(e, log, req))?;
@@ -55,12 +56,12 @@ async fn delete(state: web::Data<State>, req: HttpRequest, cid: String) -> Resp 
 }
 
 #[get("/board")]
-async fn read(state: web::Data<State>, req: HttpRequest) -> Resp {
+async fn read(state: web::Data<State>, req: HttpRequest, user: User) -> Resp {
     let log = &state.log.clone();
 
     let boards = web::block(move || {
         let conn = state.pool.get()?;
-        board::utils::get_boards(&conn)
+        board::utils::get_boards(&conn, user.id)
     })
     .await
     .map_err(|e| from_blocking_err(e, log, req))?;

@@ -2,6 +2,7 @@ table! {
     boards (id) {
         id -> Text,
         name -> Text,
+        belongs_to -> Text,
     }
 }
 
@@ -59,6 +60,7 @@ table! {
     }
 }
 
+joinable!(boards -> users (belongs_to));
 joinable!(card_tags -> cards (card_id));
 joinable!(card_tags -> tags (tag_id));
 joinable!(cards -> columns (column));

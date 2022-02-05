@@ -6,6 +6,7 @@ use crate::database::schema::boards;
 pub struct Board {
     pub id: String,
     pub name: String,
+    pub belongs_to: String,
 }
 
 #[derive(Insertable)]
@@ -13,4 +14,5 @@ pub struct Board {
 pub struct NewBoard<'a> {
     pub id: String,
     pub name: &'a String,
+    pub belongs_to: &'a String,
 }
