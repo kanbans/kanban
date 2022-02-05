@@ -8,7 +8,7 @@ const baseInputStyle = {
     "py-4": true,
     "row-span-3": true,
     "focus:outline": true,
-    "focus:outline-0": true,
+    "focus:outline-0": true
 }
 
 const inputStyle = (err: unknown | null | undefined) => {

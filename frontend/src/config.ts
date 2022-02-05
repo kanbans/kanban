@@ -1,3 +1,3 @@
 export const AppConfig = {
-    backendURL: "http://localhost:8080"
+    backendURL: "https://api.kanbans.xyz"
 }

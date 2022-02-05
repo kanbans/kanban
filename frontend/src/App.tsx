@@ -1,14 +1,12 @@
 import { Component, lazy } from "solid-js";
 import { Routes, Route } from "solid-app-router";
 
-const Login = lazy(() => import("./pages/Login"));
-const Register = lazy(() => import("./pages/Register")); // TODO: Merge with Login
+const Auth = lazy(() => import("./pages/Auth"));
 
 const App: Component = () => (
-  <div class="bg-black">
+  <div class="bg-neutral-900">
     <Routes>
-      <Route path="/login" element={<Login/>} />
-      <Route path="/register" element={<Register/>} />
+      <Route path="/auth" element={<Auth/>} />
     </Routes>
   </div>
 )
