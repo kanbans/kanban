@@ -34,10 +34,15 @@ async fn main() -> std::io::Result<()> {
                 pool: get_db_pool(),
                 log: log.clone(),
             })
+            // root routes (/)
             .service(routes::root::root)
+            // user routes (/user)
             .service(routes::user::register)
             .service(routes::user::login)
+            .service(routes::user::login)
             .service(routes::user::me)
+            // board routes (/board)
+            .service(routes::board::read)
     })
     .bind((host, port))?
     .run()

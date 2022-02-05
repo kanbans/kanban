@@ -1,6 +1,8 @@
+use serde::{Deserialize, Serialize};
+
 use crate::database::schema::boards;
 
-#[derive(Queryable)]
+#[derive(Queryable, Serialize, Deserialize)]
 pub struct Board {
     pub id: String,
     pub name: String,

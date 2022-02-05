@@ -24,6 +24,7 @@ pub enum AppError {
 
 #[derive(Serialize)]
 pub struct ErrResp {
+    pub success: bool,
     pub code: u16,
     pub message: String,
 }
@@ -42,6 +43,7 @@ impl ResponseError for AppError {
         let status_code = self.status_code();
 
         let error_response = ErrResp {
+            success: false,
             code: status_code.as_u16(),
             message: self.to_string(),
         };
