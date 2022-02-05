@@ -23,3 +23,5 @@ export const initStore = () => {
         },
     }
 }
+
+export type GlobalStore = ReturnType<typeof initStore>;
