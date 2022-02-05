@@ -1,11 +1,12 @@
-import { createSignal } from "solid-js";
-import LoginForm from "../components/LoginForm";
-import RegForm from "../components/RegForm";
+import { createSignal, lazy, Switch, Match } from "solid-js";
 import ToggleButton from "../components/ToggleButton";
 
 
+const LoginForm = lazy(() => import("../components/LoginForm"));
+const RegForm = lazy(() => import("../components/RegForm"));
+
 export function Auth() {
-    const [getForm, setForm] = createSignal(LoginForm)
+    const [getSelected, setSelected] = createSignal(0)
 
     return (
         <div class="flex h-screen justify-center items-center">
@@ -15,10 +16,13 @@ export function Auth() {
                 </h1>
                 <div className="flex flex-col gap-y-6">
                     <div>
-                        <ToggleButton choices={["Login", "Register"]} onCheck={(c) => c ? setForm(() => RegForm) :  setForm(() => LoginForm)}></ToggleButton>
+                        <ToggleButton choices={["Login", "Register"]} onCheck={setSelected}></ToggleButton>
                     </div>
                     <div>
-                        {getForm()}
+                    <Switch fallback={<LoginForm/>}>
+                        <Match when={getSelected() === 0}><LoginForm/></Match>
+                        <Match when={getSelected() === 1}><RegForm/></Match>
+                    </Switch>
                     </div>
                 </div>
             </div>

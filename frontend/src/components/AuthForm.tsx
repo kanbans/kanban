@@ -9,6 +9,7 @@ import { validator, ValidatorConfig } from "@felte/validator-zod";
 import { AuthVaraint } from "../types/auth";
 import { BackendClient } from "../repos";
 import { ZodKey, ZodValues } from "../types/zodutils";
+import { useLocation, useNavigate } from "solid-app-router";
 
 export type InputFieldInfo<T extends zod.ZodRawShape> = {
     name: ZodKey<T> & string,
@@ -30,6 +31,8 @@ function AuthForm<T extends zod.ZodRawShape>(props: ComponentProps<LoginFormComp
     const backendClient = useContext(BackendContext);
     const store = useContext(GlobalContext);
     const [authErr, setAuthErr] = createSignal<Option<string>>(None);
+    const location = useLocation<{ redirect: string }>();
+    const navigator = useNavigate();
 
     const { form, isValid, errors } = createForm<ZodValues<T>, ValidatorConfig>(
         {
@@ -43,7 +46,11 @@ function AuthForm<T extends zod.ZodRawShape>(props: ComponentProps<LoginFormComp
                     values
                 );
 
-                res.map(token => store.setAuth({ variant: AuthVaraint.Login, data: token }));
+                res.map(token => {
+                    store.setAuth({ variant: AuthVaraint.Login, data: token });
+                    const redir = location.state?.redirect || "/";
+                    navigator(redir);
+                });
                 res.mapErr(err => setAuthErr(Some(err)));
             },
         }
