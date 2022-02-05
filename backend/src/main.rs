@@ -3,6 +3,7 @@ pub mod routes;
 pub mod utils;
 
 use actix_web::{App, HttpServer};
+use actix_cors::Cors;
 use database::utils::get_db_pool;
 use dotenv::dotenv;
 use slog::info;
@@ -28,8 +29,12 @@ async fn main() -> std::io::Result<()> {
 
     info!(log, "Starting kanban server on {}:{}", host, port);
 
+    info!(log, "WARN: using permissive CORS");
+
     HttpServer::new(move || {
+        let cors = Cors::permissive();
         App::new()
+            .wrap(cors)
             .data(State {
                 pool: get_db_pool(),
                 log: log.clone(),
