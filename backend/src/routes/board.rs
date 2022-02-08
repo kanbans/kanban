@@ -11,7 +11,7 @@ type Resp = Result<HttpResponse, AppError>;
 async fn create(state: web::Data<State>, req: HttpRequest, name: String, user: User) -> Resp {
     let log = &state.log.clone();
 
-    web::block(move || {
+    let board = web::block(move || {
         let conn = state.pool.get()?;
         board::utils::create_board(&conn, &name, &user.id)
     })
@@ -20,6 +20,7 @@ async fn create(state: web::Data<State>, req: HttpRequest, name: String, user: U
 
     Ok(web::HttpResponse::Ok().json(json!({
         "success": true,
+        "board": board
     })))
 }
 

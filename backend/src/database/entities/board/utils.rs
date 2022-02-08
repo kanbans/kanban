@@ -9,8 +9,9 @@ pub fn create_board<'a>(
     conn: &SqliteConnection,
     name: &'a String,
     belongs_to: &'a String,
-) -> Result<usize, DbError> {
+) -> Result<Board, DbError> {
     let id = Uuid::new_v4().to_string();
+    let id2 = id.clone();
 
     let new_board = NewBoard {
         id,
@@ -18,11 +19,15 @@ pub fn create_board<'a>(
         belongs_to,
     };
 
-    let result = diesel::insert_into(schema::boards::table)
+    diesel::insert_into(schema::boards::table)
         .values(&new_board)
         .execute(conn)?;
 
-    Ok(result)
+    Ok(Board {
+        id: id2,
+        name: name.clone(),
+        belongs_to: belongs_to.clone(),
+    })
 }
 
 pub fn get_from_id(conn: &SqliteConnection, cid: &String) -> Result<Board, DbError> {
