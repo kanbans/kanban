@@ -24,12 +24,23 @@ async fn create(state: web::Data<State>, req: HttpRequest, name: String, user: U
 }
 
 #[put("/board")]
-async fn update(state: web::Data<State>, req: HttpRequest, cid: String, new_name: String) -> Resp {
+async fn update(
+    state: web::Data<State>,
+    req: HttpRequest,
+    cid: String,
+    new_name: String,
+    user: User,
+) -> Resp {
     let log = &state.log.clone();
 
     web::block(move || {
         let conn = state.pool.get()?;
-        board::utils::update_name(&conn, cid, new_name)
+        let board = board::utils::get_from_id(&conn, &cid)?;
+        if board.belongs_to == user.id {
+            board::utils::update_name(&conn, &cid, &new_name)
+        } else {
+            Err(Box::new(AppError::Forbidden))
+        }
     })
     .await
     .map_err(|e| from_blocking_err(e, log, req))?;
@@ -45,7 +56,7 @@ async fn delete(state: web::Data<State>, req: HttpRequest, cid: String) -> Resp 
 
     web::block(move || {
         let conn = state.pool.get()?;
-        board::utils::delete(&conn, cid)
+        board::utils::delete(&conn, &cid)
     })
     .await
     .map_err(|e| from_blocking_err(e, log, req))?;
@@ -61,7 +72,7 @@ async fn read(state: web::Data<State>, req: HttpRequest, user: User) -> Resp {
 
     let boards = web::block(move || {
         let conn = state.pool.get()?;
-        board::utils::get_boards(&conn, user.id)
+        board::utils::get_boards(&conn, &user.id)
     })
     .await
     .map_err(|e| from_blocking_err(e, log, req))?;

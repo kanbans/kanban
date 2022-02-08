@@ -25,14 +25,14 @@ pub fn create_board<'a>(
     Ok(result)
 }
 
-pub fn get_from_id(conn: &SqliteConnection, cid: String) -> Result<Board, DbError> {
+pub fn get_from_id(conn: &SqliteConnection, cid: &String) -> Result<Board, DbError> {
     use crate::database::schema::boards::dsl::*;
     let res = boards.filter(id.eq(cid)).first::<Board>(conn)?;
 
     Ok(res)
 }
 
-pub fn delete(conn: &SqliteConnection, cid: String) -> Result<usize, DbError> {
+pub fn delete(conn: &SqliteConnection, cid: &String) -> Result<usize, DbError> {
     use crate::database::schema::boards::dsl::*;
     let res = diesel::delete(boards.filter(id.eq(cid))).execute(conn)?;
 
@@ -41,8 +41,8 @@ pub fn delete(conn: &SqliteConnection, cid: String) -> Result<usize, DbError> {
 
 pub fn update_name(
     conn: &SqliteConnection,
-    cid: String,
-    new_name: String,
+    cid: &String,
+    new_name: &String,
 ) -> Result<usize, DbError> {
     use crate::database::schema::boards::dsl::*;
     let res = diesel::update(boards.filter(id.eq(cid)))
@@ -52,7 +52,7 @@ pub fn update_name(
     Ok(res)
 }
 
-pub fn get_boards(conn: &SqliteConnection, user_id: String) -> Result<Vec<Board>, DbError> {
+pub fn get_boards(conn: &SqliteConnection, user_id: &String) -> Result<Vec<Board>, DbError> {
     use crate::database::schema::boards::dsl::*;
     let res = boards.filter(belongs_to.eq(user_id)).load::<Board>(conn)?;
 

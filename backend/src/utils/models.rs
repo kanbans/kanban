@@ -16,6 +16,8 @@ pub enum AppError {
     Unknown,
     #[error("Entered username or password is invalid")]
     IncorrectCreds,
+    #[error("You do not have access to this resource")]
+    Forbidden,
     #[error("Your session is invalid, please log in again")]
     InvalidSession,
     #[error("You must log in to perform this action")]
@@ -36,6 +38,7 @@ impl ResponseError for AppError {
             Self::IncorrectCreds => StatusCode::UNAUTHORIZED,
             Self::InvalidSession => StatusCode::UNAUTHORIZED,
             Self::NotLoggedIn => StatusCode::FORBIDDEN,
+            Self::Forbidden => StatusCode::FORBIDDEN,
         }
     }
 
