@@ -14,6 +14,9 @@ use utils::models::State;
 #[macro_use]
 extern crate diesel;
 
+#[macro_use]
+extern crate diesel_migrations;
+
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
     dotenv().ok();
