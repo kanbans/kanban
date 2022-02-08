@@ -2,8 +2,8 @@ pub mod database;
 pub mod routes;
 pub mod utils;
 
-use actix_web::{App, HttpServer};
 use actix_cors::Cors;
+use actix_web::{App, HttpServer};
 use database::utils::get_db_pool;
 use dotenv::dotenv;
 use slog::info;
@@ -44,10 +44,12 @@ async fn main() -> std::io::Result<()> {
             // user routes (/user)
             .service(routes::user::register)
             .service(routes::user::login)
-            .service(routes::user::login)
             .service(routes::user::me)
             // board routes (/board)
+            .service(routes::board::create)
             .service(routes::board::read)
+            .service(routes::board::update)
+            .service(routes::board::delete)
     })
     .bind((host, port))?
     .run()

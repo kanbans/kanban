@@ -26,3 +26,14 @@ pub struct NewCard<'a> {
     pub created_by: &'a String,
     pub assigned_to: Option<String>,
 }
+
+#[derive(AsChangeset)]
+#[table_name = "cards"]
+pub struct UpdateCard<'a> {
+    pub codename: Option<&'a String>,
+    pub title: Option<&'a String>,
+    pub description: Option<&'a String>,
+    pub priority: Option<&'a i32>,
+    pub column: Option<&'a String>,
+    pub assigned_to: Option<&'a String>,
+}
