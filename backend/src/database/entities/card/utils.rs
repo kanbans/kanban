@@ -75,3 +75,10 @@ pub fn update_card<'a>(
 
     Ok(result)
 }
+
+pub fn get_cards(conn: &SqliteConnection, user_id: &String) -> Result<Vec<Card>, DbError> {
+    use crate::database::schema::cards::dsl::*;
+    let res = cards.filter(created_by.eq(user_id)).load::<Card>(conn)?;
+
+    Ok(res)
+}

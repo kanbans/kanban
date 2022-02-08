@@ -1,5 +1,5 @@
 use crate::database::entities::{card, user::model::User};
-use actix_web::{get, put, web, HttpRequest, HttpResponse};
+use actix_web::{delete, get, put, web, HttpRequest, HttpResponse};
 use serde_json::json;
 
 use crate::utils::{
@@ -82,6 +82,45 @@ async fn update(
             &column,
             &assigned_to,
         )
+    })
+    .await
+    .map_err(|e| from_blocking_err(e, log, req))?;
+
+    Ok(web::HttpResponse::Ok().json(json!({
+        "success": true,
+    })))
+}
+
+#[get("/card")]
+async fn read(state: web::Data<State>, req: HttpRequest, user: User) -> Resp {
+    let log = &state.log.clone();
+
+    let cards = web::block(move || {
+        let conn = state.pool.get()?;
+        card::utils::get_cards(&conn, &user.id)
+    })
+    .await
+    .map_err(|e| from_blocking_err(e, log, req))?;
+
+    Ok(web::HttpResponse::Ok().json(json!({
+        "success": true,
+        "cards": cards
+    })))
+}
+
+#[delete("/card")]
+async fn delete(state: web::Data<State>, req: HttpRequest, user: User, cid: String) -> Resp {
+    let log = &state.log.clone();
+
+    web::block(move || {
+        let conn = state.pool.get()?;
+
+        let existing = card::utils::get_from_id(&conn, &cid)?;
+        if existing.created_by != user.id {
+            Err(AppError::Forbidden)?;
+        }
+
+        card::utils::delete_card(&conn, &cid)
     })
     .await
     .map_err(|e| from_blocking_err(e, log, req))?;

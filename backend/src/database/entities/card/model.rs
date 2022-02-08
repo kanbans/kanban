@@ -1,7 +1,8 @@
 use crate::database::schema::cards;
 use chrono::NaiveDateTime;
+use serde::Serialize;
 
-#[derive(Queryable)]
+#[derive(Queryable, Serialize)]
 pub struct Card {
     pub id: String,
     pub codename: String,
