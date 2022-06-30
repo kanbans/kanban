@@ -7,8 +7,9 @@ import { createContext } from "solid-js";
 import { initStore } from "./store";
 import { backendClient } from "./repos";
 
-export const GlobalContext = createContext(initStore());
-export const BackendContext = createContext(backendClient());
+const store = initStore();
+export const GlobalContext = createContext(store);
+export const BackendContext = createContext(backendClient(store.state.auth.data));
 
 render(() => (
         <Router>

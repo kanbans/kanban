@@ -50,8 +50,7 @@ function AuthForm<T extends zod.ZodRawShape>(props: ComponentProps<LoginFormComp
                     store.setAuth({ variant: AuthVaraint.Login, data: token });
                     const redir = location.state?.redirect || "/";
                     navigator(redir);
-                });
-                res.mapErr(err => setAuthErr(Some(err)));
+                }).mapErr(err => setAuthErr(Some(err)));
             },
         }
     );

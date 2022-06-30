@@ -1,11 +1,10 @@
 import { AxiosError } from "axios";
 import { Err, Ok, Result } from "@sniptt/monads";
-import { BackendClient } from ".";
+import { BackendClient, BackendResp } from ".";
 
-type AuthResp = {
-    "success": boolean,
+type AuthResp = BackendResp<{
     "session_token": string
-}
+}>;
 
 export function authClient(
     backendClient: BackendClient,
@@ -20,7 +19,7 @@ export function authClient(
         }
     )
     .then(v => {
-        backendClient.defaults.headers.common["Authorization"] = `Bearer ${v.data.session_token}`
+        backendClient.defaults.headers.common["Authorization"] = v.data.session_token;
         return Ok(v.data.session_token);
     })
     .catch((e: AxiosError) => Err(e.message));
@@ -41,7 +40,7 @@ export function authClientReg(
         }
     )
     .then(v => {
-        backendClient.defaults.headers.common["Authorization"] = `Bearer ${v.data.session_token}`
+        backendClient.defaults.headers.common["Authorization"] = v.data.session_token;
         return Ok(v.data.session_token);
     })
     .catch((e: AxiosError) => Err(e.message));

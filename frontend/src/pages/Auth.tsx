@@ -19,10 +19,10 @@ export function Auth() {
                         <ToggleButton choices={["Login", "Register"]} onCheck={setSelected}></ToggleButton>
                     </div>
                     <div>
-                    <Switch fallback={<LoginForm/>}>
-                        <Match when={getSelected() === 0}><LoginForm/></Match>
-                        <Match when={getSelected() === 1}><RegForm/></Match>
-                    </Switch>
+                        <Switch fallback={<LoginForm/>}>
+                            <Match when={getSelected() === 0}><LoginForm/></Match>
+                            <Match when={getSelected() === 1}><RegForm/></Match>
+                        </Switch>
                     </div>
                 </div>
             </div>
