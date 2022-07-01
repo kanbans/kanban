@@ -29,7 +29,7 @@ export const initStore = () => {
 
             setState({ ...state, auth })
         },
-        setSelectedBoard: (board: Board) => {
+        setBoard: (board: Board) => {
             if (state.board && state.board.id === board.id) {
                 return
             }
