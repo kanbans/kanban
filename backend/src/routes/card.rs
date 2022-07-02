@@ -1,4 +1,6 @@
 use crate::database::entities::{card, user::model::User};
+use crate::database::entities::column;
+use crate::database::entities::board;
 use actix_web::{delete, get, put, web, HttpRequest, HttpResponse};
 use serde_json::json;
 
@@ -26,6 +28,12 @@ async fn create(
     web::block(move || {
         let conn = state.pool.get()?;
         let priority: i32 = priority.parse()?;
+
+        let col = column::utils::get_from_id(&conn, &column)?;
+        let board = board::utils::get_from_id(&conn, &col.belongs_to)?;
+        if board.belongs_to != user.id {
+            Err(AppError::Forbidden)?;
+        }
 
         card::utils::create_card(
             &conn,
