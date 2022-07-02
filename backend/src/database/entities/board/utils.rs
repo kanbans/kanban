@@ -30,9 +30,9 @@ pub fn create_board<'a>(
     })
 }
 
-pub fn get_from_id(conn: &SqliteConnection, cid: &String) -> Result<Board, DbError> {
+pub fn get_from_id(conn: &SqliteConnection, bid: &String) -> Result<Board, DbError> {
     use crate::database::schema::boards::dsl::*;
-    let res = boards.filter(id.eq(cid)).first::<Board>(conn)?;
+    let res = boards.filter(id.eq(bid)).first::<Board>(conn)?;
 
     Ok(res)
 }
