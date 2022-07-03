@@ -25,9 +25,12 @@ function BoardsNav({
         const board = await createBoard(backend, boardNameRef!.value);
         board.isErr() && setErr(board.unwrapErr());
         board.isOk() &&
-            mutateBoards((prev) => {
-                return [...prev, board.unwrap()];
-            });
+            (() => {
+                mutateBoards((prev) => {
+                    return [...prev, board.unwrap()];
+                });
+                setErr(undefined);
+            })()
     }
 
     return (
