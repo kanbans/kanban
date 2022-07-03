@@ -18,20 +18,23 @@ pub fn create_column<'a>(
     conn: &SqliteConnection,
     name: &'a String,
     belongs_to: &'a String,
-) -> Result<usize, DbError> {
+) -> Result<Column, DbError> {
     let id = Uuid::new_v4().to_string();
 
     let new_column = NewColumn {
-        id,
+        id: id.clone(),
         name,
         belongs_to,
     };
-
-    let result = diesel::insert_into(schema::columns::table)
+    
+    diesel::insert_into(schema::columns::table)
         .values(&new_column)
         .execute(conn)?;
 
-    Ok(result)
+    Ok(Column{
+        id: id.clone(),
+        name: name.clone(), belongs_to: belongs_to.clone(),
+    })
 }
 
 pub fn delete_column(conn: &SqliteConnection, cid: &String) -> Result<usize, DbError> {

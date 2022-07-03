@@ -20,7 +20,7 @@ async fn create(
 ) -> Resp {
     let log = &state.log.clone();
 
-    web::block(move || {
+    let column = web::block(move || {
         let conn = state.pool.get()?;
 
         let board = board::utils::get_from_id(&conn, &belongs_to)?;
@@ -35,6 +35,7 @@ async fn create(
 
     Ok(web::HttpResponse::Ok().json(json!({
         "success": true,
+        "column": column
     })))
 }
 
