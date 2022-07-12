@@ -1,8 +1,17 @@
-import { createResource, createSignal, Show, useContext } from "solid-js";
+import {
+    createEffect,
+    createResource,
+    createSignal,
+    For,
+    Show,
+    useContext,
+} from "solid-js";
 import { BackendContext, GlobalContext } from "..";
 import BoardsNav from "../components/BoardsNav";
+import BoardView from "../components/BoardView";
 import { requireAuth } from "../helpers";
 import { getBoards } from "../repos/board";
+import { getColumns } from "../repos/columns";
 
 function Boards() {
     requireAuth();
@@ -30,14 +39,11 @@ function Boards() {
                         onBoardClick={store.setBoard}
                         boards={boards}
                         mutateBoards={mutateBoard}
+                        refetchBoards={refetchBoard}
                     ></BoardsNav>
                 </div>
                 <div class="content h-full p-4">
-                    <Show when={store.state.board !== undefined}>
-                        <h1 class="text-6xl text-white">
-                            {store.state.board!.name}
-                        </h1>
-                    </Show>
+                    <BoardView />
                 </div>
             </div>
         </>

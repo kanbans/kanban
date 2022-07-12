@@ -19,6 +19,17 @@ export function getBoards(backend: BackendClient): Promise<Result<Array<Board>, 
     .catch((err: AxiosError) => Err(err.message));
 }
 
+export function deleteBoard(backend: BackendClient, cid: string): Promise<Result<undefined, string>> {
+    return backend.delete<BackendResp<undefined>>(
+        "/board", {
+            data: {
+                cid
+            }
+        }
+    ).then(_ => Ok(undefined))
+    .catch((err: AxiosError) => Err(err.message));
+}
+
 export function createBoard(backend: BackendClient, name: string): Promise<Result<Board, string>> {
     return backend.post<BackendResp<{ board: Board }>>(
         "/board",

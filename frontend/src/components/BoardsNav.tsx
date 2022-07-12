@@ -1,16 +1,18 @@
 import { createSignal, For, Resource, Show, useContext } from "solid-js";
 import { BackendContext, GlobalContext } from "..";
-import { Board, createBoard } from "../repos/board";
-import { FiPlus, FiCheck } from "solid-icons/fi";
+import { Board, createBoard, deleteBoard } from "../repos/board";
+import { FiPlus, FiCheck, FiDelete, FiTrash } from "solid-icons/fi";
 
 function BoardsNav({
     boards,
     onBoardClick,
     mutateBoards,
+    refetchBoards
 }: {
     boards: Resource<Board[]>;
     onBoardClick: (b: Board) => void;
     mutateBoards: (f: (prev: Board[]) => Board[]) => void;
+    refetchBoards: (info?: unknown) => void;
 }) {
     // Use Contexts
     const backend = useContext(BackendContext);
@@ -78,12 +80,19 @@ function BoardsNav({
                 <For each={boards()}>
                     {(item) => (
                         <div
-                            class="hover:bg-neutral-600 w-full rounded px-2 py-1"
+                            class="flex hover:bg-neutral-600 w-full rounded px-2 py-1 justify-between"
                             onClick={() => {
                                 onBoardClick(item);
                             }}
                         >
                             <button>{item.name}</button>
+                            <button onClick={
+                                () => {
+                                    deleteBoard(backend, item.id).then((res) => {
+                                        refetchBoards();
+                                    });
+                                }
+                            }><FiTrash class="hover:text-red-400"/></button>
                         </div>
                     )}
                 </For>
